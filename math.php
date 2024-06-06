@@ -24,6 +24,8 @@
     //$total = pow($x)
     //$total = max($x,$y,$z)
     //$total = min($x,$y,$z)
+    //$total = pi()
+    //$total = rand(1,100)
     $r = $_POST["r"];
     $pi = pi();
     $cirumcumstance = 2*$pi*$r;
