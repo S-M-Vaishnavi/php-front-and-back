@@ -47,13 +47,20 @@ if(isset($_POST['submit'])){
     if($password!==$repeat_password){
         array_push($errors,"Passwords do not match");
     }
+    require_once "dbconnect.php";
+
+    $sql = "SELECT * FROM `registration` WHERE email='$email'";
+    $result = mysqli_query($con,$sql);
+    $rowCount = mysqli_num_rows($result);
+    if($rowCount>0){
+        array_push($errors,"Email Already existed");
+    }
 
     if(count($errors)>0){
         foreach($errors as $error){
             echo "<div class='alert alert-danger'>$error</div>";
         }
     }else{
-        require_once "dbconnect.php";
         $insert_query = "INSERT INTO `registration` (name, phone, email, password) VALUES (?,?,?,?)";
         $stmt = mysqli_stmt_init($con);
         $prepareStmt = mysqli_stmt_prepare($stmt, $insert_query);
@@ -98,6 +105,9 @@ if(isset($_POST['submit'])){
 
     <div class="text-center">
         <button type="submit" class="btn btn-primary" name="submit">Sign Up</button>
+    </div>
+    <div class="text-center">
+        <a href="login.php">Already Registered.Login here!</a>
     </div>
 </form>
 </div>

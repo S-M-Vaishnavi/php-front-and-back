@@ -1,0 +1,36 @@
+ <?php
+        require_once('tableDbConnect.php');
+        if(isset($_GET['addUser'])){
+            $name = $_GET['name'];
+            $age = $_GET['age'];
+            $city = $_GET['city'];
+            $email = $_GET['email'];
+            $phone = $_GET['phone'];
+            $post = $_GET['post'];
+            $startDate = $_GET['startDate'];
+            $image = $_FILES['image']['name'];
+            $imageTmp = $_FILES['image']['tmp_name'];
+
+            // Move uploaded image to the desired directory
+            // move_uploaded_file($imageTmp, "uploads/$image");
+
+            $insert_query = "INSERT INTO `employees`(picture, name, age, city, email, phone, post, start_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            $stmt = mysqli_stmt_init($con);
+            $prepareStmt = mysqli_stmt_prepare($stmt, $insert_query);
+
+            if($prepareStmt){
+                mysqli_stmt_bind_param($stmt, "ssssssss", $image, $name, $age, $city, $email, $phone, $post, $startDate);
+                mysqli_stmt_execute($stmt);
+                echo "<div class='alert alert-success'>Added Successfully</div>";
+            }else{
+                die("Something Went Wrong");
+            }
+        }
+    ?>
+                <?php
+                        $id = $_GET['id'];
+                        $sql = "SELECT * FROM `crud` WHERE id = $id LIMIT 1";
+                        $result = mysqli_query($con,$sql);
+                        $row = mysqli_fetch_Assoc($result) 
+
+                    ?>

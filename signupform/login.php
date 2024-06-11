@@ -1,23 +1,8 @@
 <?php
-$success = 0;
-$user = 0;
-
-if($_SERVER['REQUEST_METHOD'] == 'POST'){
-    include 'connect.php';
-    $username = $_POST['username'];
-    $password = $_POST['password'];
-
-    $sql = "select * from `signup` where username='$username'";
-    $result = mysqli_query($con,$sql);
-    if($result){
-        $num = mysqli_num_rows($result);
-        if($num>0){
-            $user = 1;
-        } else{
-        }
-    }
+session_start();
+if(isset($_SESSION["user"])){
+    header("Location:index.php");
 }
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -39,22 +24,52 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
             text-align:center;
             margin-top:10px;
         }
+        
     </style>
 </head>
 <body>
 <div class="card main-div">
+    <?php
+    if(isset($_POST["login"])){
+        $email = $_POST["email"];
+        $password = $_POST["password"];
+        require_once "dbconnect.php";
+
+        $sql = "SELECT * FROM `registration` WHERE email='$email'";
+        $result = mysqli_query($con,$sql);
+        $user = mysqli_fetch_array($result,MYSQLI_ASSOC);
+        if($user){
+            if(password_verify($password,$user['password'])){
+                session_start();
+                $_SESSION["user"] = "yes";
+                header("Location:index.php");
+                die();
+            }else{
+                echo "<div class='alert alert-success'>Password does not match</div>";
+            }
+        }else{
+            echo "<div class='alert alert-success'>Invalid Credentials</div>";
+
+        }
+
+    }
+
+    ?>
 <form action = 'login.php' method='POST'>
     <h1>SIGN IN</h1>
   <div class="mb-3">
-    <label for="exampleInputEmail1" class="form-label">Username</label>
-    <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="username">
+    <label for="exampleInputEmail1" class="form-label">Email</label>
+    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="email">
   </div>
   <div class="mb-3">
     <label for="exampleInputPassword1" class="form-label">Password</label>
     <input type="password" class="form-control" id="exampleInputPassword1" name="password">
   </div>
   <div class="text-center">
-  <button type="submit" class="btn btn-primary">Sign In</button>
+  <button type="submit" class="btn btn-primary" name="login">Sign In</button>
+  </div>
+  <div class="text-center">
+  <a href="register.php" style="text-decoration:none">New User! Register Here</a>
 </div>
 </form>
 </div>
